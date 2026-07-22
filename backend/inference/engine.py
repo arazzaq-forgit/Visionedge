@@ -4,12 +4,14 @@ import tensorrt as trt
 
 TRT_LOGGER = trt.Logger(trt.Logger.WARNING)
 
-def build_engine(onnx_path: str, engine_path: str, fp16: bool = True):
+def build_engine(onnx_path: str, engine_path: str):
     """
     Compile an ONNX model into a TensorRT engine for optimized inference.
+    (FP16 tuning to be revisited later — TensorRT 11's precision API
+    differs significantly from older tutorials/docs.)
     """
     builder = trt.Builder(TRT_LOGGER)
-    network = builder.create_network(1 << int(trt.NetworkDefinitionCreationFlag.EXPLICIT_BATCH))
+    network = builder.create_network()
     parser = trt.OnnxParser(network, TRT_LOGGER)
 
     with open(onnx_path, "rb") as f:
@@ -19,15 +21,15 @@ def build_engine(onnx_path: str, engine_path: str, fp16: bool = True):
             raise RuntimeError("Failed to parse ONNX model")
 
     config = builder.create_builder_config()
-    config.max_workspace_size = 1 << 30  # 1GB
-    if fp16 and builder.platform_has_fast_fp16:
-        config.set_flag(trt.BuilderFlag.FP16)
+    config.set_memory_pool_limit(trt.MemoryPoolType.WORKSPACE, 1 << 30)  # 1GB
 
-    engine = builder.build_engine(network, config)
+    serialized_engine = builder.build_serialized_network(network, config)
+    if serialized_engine is None:
+        raise RuntimeError("Engine build failed")
 
     with open(engine_path, "wb") as f:
-        f.write(engine.serialize())
+        f.write(serialized_engine)
     print(f"Saved TensorRT engine to {engine_path}")
 
 if __name__ == "__main__":
-    build_engine("yolov10.onnx", "yolov10.engine")
+    build_engine("models/yolov8n.onnx", "models/yolov8n.engine")
