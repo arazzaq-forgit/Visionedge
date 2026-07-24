@@ -11,7 +11,7 @@ def build_engine(onnx_path: str, engine_path: str):
     differs significantly from older tutorials/docs.)
     """
     builder = trt.Builder(TRT_LOGGER)
-    network = builder.create_network()
+    network = builder.create_network(1 << int(trt.NetworkDefinitionCreationFlag.STRONGLY_TYPED))
     parser = trt.OnnxParser(network, TRT_LOGGER)
 
     with open(onnx_path, "rb") as f:
@@ -32,4 +32,4 @@ def build_engine(onnx_path: str, engine_path: str):
     print(f"Saved TensorRT engine to {engine_path}")
 
 if __name__ == "__main__":
-    build_engine("models/yolov8n.onnx", "models/yolov8n.engine")
+    build_engine("models/yolov8s.onnx", "models/yolov8s.engine")
