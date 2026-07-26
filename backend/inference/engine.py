@@ -8,7 +8,7 @@ def build_engine(onnx_path: str, engine_path: str):
     """
     Compile an ONNX model into a TensorRT engine for optimized inference.
     (FP16 tuning to be revisited later — TensorRT 11's precision API
-    differs significantly from older tutorials/docs.)
+    differ significantly from older tutorials/docs.)
     """
     builder = trt.Builder(TRT_LOGGER)
     network = builder.create_network(1 << int(trt.NetworkDefinitionCreationFlag.STRONGLY_TYPED))
