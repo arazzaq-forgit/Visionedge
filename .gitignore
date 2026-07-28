@@ -1,0 +1,7 @@
+
+# streaming (Usman)
+backend/streaming/sample.mp4
+venv/
+__pycache__/
+node_modules/
+dist/
