@@ -14,7 +14,7 @@ def load_engine(engine_path):
 def benchmark_tensorrt(engine_path="models/yolov8s.engine", num_runs=100, imgsz=640):
     engine = load_engine(engine_path)
     context = engine.create_execution_context()
-    
+
     input_name = engine.get_tensor_name(0)
     output_name = engine.get_tensor_name(1)
 
