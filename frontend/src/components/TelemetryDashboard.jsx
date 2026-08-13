@@ -27,29 +27,53 @@ export default function TelemetryDashboard() {
   }, []);
 
   return (
-    <div style={{ fontFamily: "sans-serif", marginTop: "1.5rem", padding: "1rem", border: "1px solid #ccc", borderRadius: "8px", maxWidth: "400px" }}>
-      <h3>Telemetry Dashboard</h3>
-      <p>Status: {connected ? "🟢 Connected" : "🔴 Waiting for backend..."}</p>
-
-      <div style={{ marginTop: "1rem" }}>
-        <MetricBar label="FPS" value={metrics.fps} max={60} unit="fps" />
-        <MetricBar label="GPU Memory" value={metrics.gpuMemoryPercent} max={100} unit="%" />
-        <MetricBar label="Decoder Utilization" value={metrics.decoderUtilization} max={100} unit="%" />
+    <section className={`telemetry ${connected ? "" : "telemetry--offline"}`}>
+      <div className="telemetry__header">
+        <h3 className="telemetry__title">Telemetry</h3>
+        <span
+          className={`status-pill ${connected ? "status-pill--live" : "status-pill--idle"
+            }`}
+        >
+          <span className="status-dot" />
+          {connected ? "connected" : "waiting for backend"}
+        </span>
       </div>
-    </div>
+
+      <MetricBar label="FPS" value={metrics.fps} max={60} unit="fps" />
+      <MetricBar
+        label="GPU Memory"
+        value={metrics.gpuMemoryPercent}
+        max={100}
+        unit="%"
+        amber
+      />
+      <MetricBar
+        label="Decoder Utilization"
+        value={metrics.decoderUtilization}
+        max={100}
+        unit="%"
+      />
+    </section>
   );
 }
 
-function MetricBar({ label, value, max, unit }) {
-  const percent = Math.min((value / max) * 100, 100);
+function MetricBar({ label, value, max, unit, amber }) {
+  const safeValue = value ?? 0;
+  const percent = Math.min((safeValue / max) * 100, 100);
   return (
-    <div style={{ marginBottom: "0.75rem" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem" }}>
-        <span>{label}</span>
-        <span>{value?.toFixed(1)} {unit}</span>
+    <div className="metric">
+      <div className="metric__row">
+        <span className="metric__label">{label}</span>
+        <span className="metric__value">
+          {safeValue.toFixed(1)}
+          <span>{unit}</span>
+        </span>
       </div>
-      <div style={{ background: "#eee", borderRadius: "4px", height: "8px" }}>
-        <div style={{ width: `${percent}%`, background: "#4caf50", height: "100%", borderRadius: "4px" }} />
+      <div className="meter">
+        <div
+          className={`meter__fill ${amber ? "meter__fill--amber" : ""}`}
+          style={{ width: `${percent}%` }}
+        />
       </div>
     </div>
   );
