@@ -7,6 +7,7 @@ since browser and server are on the same machine/network.
 Run standalone for local testing:
     python -m backend.streaming.webrtc_server
 """
+from backend.streaming.metrics import register_metrics_route
 import asyncio
 import logging
 import os
@@ -73,6 +74,7 @@ def create_app():
     app.router.add_post("/offer", offer)
     app.router.add_options("/offer", lambda r: web.Response())
     app.on_shutdown.append(on_shutdown)
+    register_metrics_route(app)
     return app
 
 
