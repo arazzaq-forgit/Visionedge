@@ -10,7 +10,7 @@ Built as part of the Axlero Solutions Intern Project Program (Project 1, 2026 cy
 
 VisionEdge tackles a real bottleneck in the production computer vision: running object detection on video streams without the CPU↔GPU data-copy overhead that kills throughput in naive pipelines. The system decodes video, runs inference, and streams annotated results to a browser — with the compute-heavy path kept entirely on the GPU wherever possible.
 
-**Problem it solves:** standard OpenCV + PyTorch pipelines bottleneck on CPU decode and CPU↔GPU tensor transfers, making it hard to process multiple high-resolution streams in real time. VisionEdge addresses this with hardware-accelerated decoding, TensorRT-optimized inference, and a CuPy-based zero-copy pipeline.
+**Problem it solves:** standard OpenCV + PyTorch pipelines bottleneck on CPU decode and CPU↔GPU tensor transfers, making it hard to process multiple high-resolution streams in real time. VisionEdge address this with hardware-accelerated decoding, TensorRT-optimized inference, and a CuPy-based zero-copy pipeline.
 
 ---
 
